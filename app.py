@@ -14,15 +14,29 @@ from flask_sqlalchemy import SQLAlchemy
 import detector
 from utils import normalize_image
 
+
 # Initialize SQLAlchemy
 db = SQLAlchemy()
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 db.init_app(app)
 
+import datetime
+from sqlalchemy import Column, Integer, Text, DateTime
+
+
+class Entry(db.Model):
+    id = Column(Integer, primary_key=True)
+    uuid = Column(Text)  # UUID, Used to categorize entries
+    image = Column(Text)
+    segments = Column(Text)
+    percentage = Column(Integer, nullable=True)
+    most_significant_detection = Column(Text)
+    most_significant_area = Column(Integer)
+    date_created = Column(DateTime, default=datetime.datetime.utcnow)
+
 
 with app.app_context():
-    from models import Entry
     db.create_all()
 
 d = detector.Detector()
