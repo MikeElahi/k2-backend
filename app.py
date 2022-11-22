@@ -20,7 +20,7 @@ app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
 
 db.init_app(app)
-from models import Entry
+
 
 with app.app_context():
     db.create_all()
@@ -80,6 +80,7 @@ def predict():
         # percentage = int(most_significant_detection[1] / (previous.most_significant_area / previous.percentage))
         percentage = int(most_significant_detection[1] / ((output_image.size[0] * output_image.size[1]) * 0.8) * 100)
     # Save to Database
+    from models import Entry
     entry = Entry(uuid=request.form.get('uuid', request.json.get('uuid')), image=encoded_image.decode('utf-8'),
                   segments=json.dumps(segments_info),
                   percentage=percentage,
