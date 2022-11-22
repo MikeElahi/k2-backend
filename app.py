@@ -18,7 +18,7 @@ from utils import normalize_image
 db = SQLAlchemy()
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///project.db"
-
+import models
 db.init_app(app)
 
 
@@ -112,6 +112,7 @@ def predict():
 # Get all entities for a specific uuid through /entities/{uuid}
 @app.route("/entities/<uuid>", methods=["GET"])
 def get_all_entries_for(uuid):
+    from models import Entry
     return jsonify([{
         'id': entity.id,
         'uuid': entity.uuid,
@@ -124,6 +125,7 @@ def get_all_entries_for(uuid):
 
 @app.route("/entities/<uuid>/<id>", methods=["GET"])
 def get_entity(uuid, id):
+    from models import Entry
     entity = Entry.query.filter_by(uuid=uuid, id=id).first()
     if entity:
         return jsonify({
@@ -141,12 +143,14 @@ def get_entity(uuid, id):
 
 @app.route("/entities/<uuid>/check", methods=['GET'])
 def check_entry_exists(uuid):
+    from models import Entry
     if not Entry.query.filter_by(uuid=uuid).first():
         return '', 404
     return '', 204
 
 # Get Latest entry for a given uuid
 def get_first_entry_for(uuid):
+    from models import Entry
     return Entry.query.filter_by(uuid=uuid).first()
 
 
