@@ -14,6 +14,7 @@ class Detector:
         setup_logger()
         with torch.no_grad():
             cfg = get_cfg()
+            cfg.MODEL.DEVICE = 'cpu'
             cfg.merge_from_file(model_zoo.get_config_file(model))
             cfg.MODEL.WEIGHTS = model_zoo.get_checkpoint_url(model)
             self.cfg = cfg
